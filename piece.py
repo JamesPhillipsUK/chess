@@ -24,3 +24,11 @@ class Piece:
         self.pieceType = pType
         self.pieceColour = colour
         self.pieceSquare = square
+
+    def moveTo(self, square: str):
+        """ Move the piece
+
+        Args:
+            square (string): the square to move the piece to.
+        """
+        self.pieceSquare = square
