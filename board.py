@@ -6,6 +6,7 @@ Authors: Jesse Phillips <james@jamesphillipsuk.com>
 """
 import PySimpleGUI as psg
 from square import *
+from piece import *
 import base64
 
 
@@ -24,6 +25,7 @@ class Board:
                 self.layout[cnt-1] += [Square(key=col + str(cnt),
                                               image_data=self.getSquareColour(
                                                   col + str(cnt)))]
+        self.layout.reverse()
 
     def getLayout(self):
         """ Gets the current board layout
@@ -91,12 +93,49 @@ class Board:
         self.window.close()
         return True
 
+    def setUpPieces(self):
+        self.window["a1"].setCurrentPiece(Piece("rook", "white", "a1"))
+        self.window["b1"].setCurrentPiece(Piece("knight", "white", "b1"))
+        self.window["c1"].setCurrentPiece(Piece("bishop", "white", "c1"))
+        self.window["d1"].setCurrentPiece(Piece("queen", "white", "d1"))
+        self.window["e1"].setCurrentPiece(Piece("king", "white", "e1"))
+        self.window["f1"].setCurrentPiece(Piece("bishop", "white", "f1"))
+        self.window["g1"].setCurrentPiece(Piece("knight", "white", "g1"))
+        self.window["h1"].setCurrentPiece(Piece("rook", "white", "h1"))
+
+    def updateBoardView(self):
+        squares = [self.window["a1"], self.window["b1"], self.window["c1"],
+                   self.window["d1"], self.window["e1"], self.window["f1"],
+                   self.window["g1"], self.window["h1"]]
+        for item in squares:
+            imageLocation = "img/"
+            image = item.getCurrentImage()
+            if image[5:10] == "white": imageLocation += "w_"
+            else: imageLocation += "b_"
+            if image[10:] == "bishop": imageLocation += "b_"
+            elif image[10:] == "knight": imageLocation += "n_"
+            elif image[10:] == "rook": imageLocation += "r_"
+            elif image[10:] == "queen": imageLocation += "q_"
+            elif image[10:] == "king": imageLocation += "k_"
+            elif image[10:] == "pawn": imageLocation += "p_"
+            if image[:5] == "white": imageLocation += "w.png"
+            else: imageLocation += "b.png"
+            item.update(image_data=self.convertImageToB64(imageLocation))
+
     def launchGameLoop(self):
         """Launches and runs the game loop.
         """
+        isInitialising = True
         while True:
-            event, values = self.window.read()
-            #self.window["a1"].getCurrentImage()
+            event, values = self.window.read(timeout=100)
+            if isInitialising:
+                self.setUpPieces()
+                self.updateBoardView()
+                isInitialising = False
+            if event !=psg.WIN_CLOSED:
+                if event != psg.TIMEOUT_EVENT:
+                    psg.Print(self.window[event].getCurrentImage())
+                self.updateBoardView()
             if event == psg.WIN_CLOSED:
                 break
         self.killBoard()
