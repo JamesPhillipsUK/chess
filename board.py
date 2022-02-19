@@ -1,4 +1,5 @@
 import PySimpleGUI as psg
+from square import *
 import base64
 
 
@@ -6,6 +7,31 @@ class Board:
     window = psg.Window(title="Chess")
     whiteSquare = b''
     blackSquare = b''
+    layout = []
+
+    def setInitialLayout(self):
+        self.layout = []
+        for cnt in range(8, 0, -1):
+            self.layout += [
+                       [Square("a" + str(cnt),
+                        image_data=self.getSquareColour("a" + str(cnt)))] +
+                       [Square("b" + str(cnt),
+                        image_data=self.getSquareColour("b" + str(cnt)))] +
+                       [Square("c" + str(cnt),
+                        image_data=self.getSquareColour("c" + str(cnt)))] +
+                       [Square("d" + str(cnt),
+                        image_data=self.getSquareColour("d" + str(cnt)))] +
+                       [Square("e" + str(cnt),
+                        image_data=self.getSquareColour("e" + str(cnt)))] +
+                       [Square("f" + str(cnt),
+                        image_data=self.getSquareColour("f" + str(cnt)))] +
+                       [Square("g" + str(cnt),
+                        image_data=self.getSquareColour("g" + str(cnt)))] +
+                       [Square("h" + str(cnt),
+                        image_data=self.getSquareColour("h" + str(cnt)))]]
+
+    def getLayout(self):
+        return self.layout
 
     def getSquareColour(self, squareName: str):
         squareNameSpec = [char for char in squareName]
