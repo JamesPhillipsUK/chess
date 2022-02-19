@@ -96,6 +96,7 @@ class Board:
         """
         while True:
             event, values = self.window.read()
+            #self.window["a1"].getCurrentImage()
             if event == psg.WIN_CLOSED:
                 break
         self.killBoard()
