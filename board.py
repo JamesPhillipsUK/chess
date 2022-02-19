@@ -15,6 +15,8 @@ class Board:
     window = psg.Window(title="Chess")
     whiteSquare = b''
     blackSquare = b''
+    clickCount = 0
+    selectedSquare = Square
     layout = [[], [], [], [], [], [], [], []]
 
     def setInitialLayout(self):
@@ -149,6 +151,22 @@ class Board:
                     imageLocation = "img/w_square.png"
             item.update(image_data=self.convertImageToB64(imageLocation))
 
+    def handleMove(self, square: Square):
+        """Handles moving a piece
+
+        Args:
+            square (Square): the currently selected square.
+        """
+        if self.clickCount % 2 == 0:
+            self.selectedSquare = square
+            square.update(disabled=True)
+        else:
+            self.selectedSquare.getCurrentPiece().moveTo(square.Key)
+            square.setCurrentPiece(self.selectedSquare.getCurrentPiece())
+            self.selectedSquare.setCurrentPiece(Piece("", "", ""))
+            self.selectedSquare.update(disabled=False)
+        self.clickCount += 1
+
     def launchGameLoop(self):
         """Launches and runs the game loop.
         """
@@ -162,6 +180,7 @@ class Board:
             if event != psg.WIN_CLOSED:
                 if event != psg.TIMEOUT_EVENT:
                     psg.Print(self.window[event].getCurrentImage())
+                    self.handleMove(self.window[event])
                 self.updateBoardView()
             if event == psg.WIN_CLOSED:
                 break
