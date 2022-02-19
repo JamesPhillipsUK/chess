@@ -7,6 +7,16 @@ class Board:
     whiteSquare = b''
     blackSquare = b''
 
+    def getSquareColour(self, squareName: str):
+        squareNameSpec = [char for char in squareName]
+        if squareNameSpec[0] in ['a', 'c', 'e', 'g']:
+            if int(squareNameSpec[1]) % 2 == 0:
+                return self.whiteSquare
+        else:
+            if int(squareNameSpec[1]) % 2 != 0:
+                return  self.whiteSquare
+        return  self.blackSquare
+
     def convertImageToB64(self, filename: str):
         with open(filename, 'rb') as imageFile:
             image = imageFile.read()
