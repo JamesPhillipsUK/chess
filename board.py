@@ -94,6 +94,8 @@ class Board:
         return True
 
     def setUpPieces(self):
+        """ Sets up the pieces on the board.
+        """
         self.window["a1"].setCurrentPiece(Piece("rook", "white", "a1"))
         self.window["b1"].setCurrentPiece(Piece("knight", "white", "b1"))
         self.window["c1"].setCurrentPiece(Piece("bishop", "white", "c1"))
@@ -118,6 +120,8 @@ class Board:
         self.window["h8"].setCurrentPiece(Piece("rook", "black", "h8"))
 
     def updateBoardView(self):
+        """Updates the view of the board.
+        """
         squares = []
         for file in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']:
             for rank in range(8, 0, -1):
