@@ -15,7 +15,7 @@ class Piece:
 
     def __init__(self, pType: str, colour: str, square: str):
         """Create an instance of a chess piece.
-        
+
         Args:
             pType (string): the type of piece.  IE: "king", "pawn", etc.
             colour (string): the colour of the piece.
