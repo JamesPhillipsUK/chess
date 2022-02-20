@@ -231,8 +231,12 @@ class Board:
                    ord(targetKey[0]) - ord(currentKey[0]) == -1) and
                   self.window[targetKey[0]+currentKey[1]].getCurrentPiece()
                       .pieceColour == "black" and
-                  self.pGN[len(self.pGN) - 1] == targetKey[0]+currentKey[1]):
-                self.window[targetKey[0]+currentKey[1]].setCurrentPiece(Piece("", "", ""))
+                  self.pGN[len(self.pGN) - 1] == targetKey[0] + currentKey[1]):
+                for move in self.pGN:
+                    if move == targetKey[0] + "6":
+                        return False
+                self.window[targetKey[0] + currentKey[1]].setCurrentPiece(
+                    Piece("", "", ""))
                 self.pGN.append(currentKey[0] + "x" + targetKey)
                 return True  # White takes en passant.
             elif (int(currentKey[1]) == 2 and
@@ -258,8 +262,12 @@ class Board:
                    ord(targetKey[0]) - ord(currentKey[0]) == -1) and
                   self.window[targetKey[0]+currentKey[1]].getCurrentPiece()
                       .pieceColour == "white" and
-                  self.pGN[len(self.pGN) - 1] == targetKey[0]+currentKey[1]):
-                self.window[targetKey[0]+currentKey[1]].setCurrentPiece(Piece("", "", ""))
+                  self.pGN[len(self.pGN) - 1] == targetKey[0] + currentKey[1]):
+                for move in self.pGN:
+                    if move == targetKey[0] + "3":
+                        return False
+                self.window[targetKey[0] + currentKey[1]].setCurrentPiece(
+                    Piece("", "", ""))
                 self.pGN.append(currentKey[0] + "x" + targetKey)
                 return True  # Black takes en passant.
             elif (int(currentKey[1]) == 7 and
