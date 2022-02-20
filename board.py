@@ -278,6 +278,44 @@ class Board:
                 return True  # Initial black move.
         return False
 
+    def isKnightMoveLegal(self, currentPosition: Square,
+                          targetPosition: Square):
+        """Checks if a Knight move is legal.
+
+        Args:
+            currentPosition (Square): The current piece position.
+            targetPosition (Square): The target piece position.
+
+        Returns:
+            Boolean: True if the move is legal.
+        """
+        targetKey = targetPosition.Key
+        currentKey = currentPosition.Key
+        if ((ord(targetKey[0]) - ord(currentKey[0]) == 1 or
+             ord(currentKey[0]) - ord(targetKey[0]) == 1) and
+            (int(targetKey[1]) - int(currentKey[1]) == 2 or
+             int(currentKey[1]) - int(targetKey[1]) == 2)):
+            if targetPosition.getCurrentPiece().pieceType == "":
+                self.pGN.append("N"+targetKey)
+                return True  # Move to empty square.
+            elif (targetPosition.getCurrentPiece().pieceColour !=
+                  currentPosition.getCurrentPiece().pieceColour):
+                self.pGN.append("Nx"+targetKey)
+                return True  # Knight takes.
+
+        elif ((ord(targetKey[0]) - ord(currentKey[0]) == 2 or
+               ord(currentKey[0]) - ord(targetKey[0]) == 2) and
+              (int(targetKey[1]) - int(currentKey[1]) == 1 or
+               int(currentKey[1]) - int(targetKey[1]) == 1)):
+            if targetPosition.getCurrentPiece().pieceType == "":
+                self.pGN.append("N"+targetKey)
+                return True  # Move to empty square.
+            elif (targetPosition.getCurrentPiece().pieceColour !=
+                  currentPosition.getCurrentPiece().pieceColour):
+                self.pGN.append("Nx"+targetKey)
+                return True  # Knight takes.
+        return False
+
     def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
         """Checks if a move is legal.
 
@@ -290,6 +328,9 @@ class Board:
         """
         if currentPosition.getCurrentPiece().pieceType == "pawn":
             if self.isPawnMoveLegal(currentPosition, targetPosition):
+                return True
+        elif currentPosition.getCurrentPiece().pieceType == "knight":
+            if self.isKnightMoveLegal(currentPosition, targetPosition):
                 return True
         return False
 
