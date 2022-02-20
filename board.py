@@ -151,6 +151,22 @@ class Board:
                     imageLocation = "img/w_square.png"
             item.update(image_data=self.convertImageToB64(imageLocation))
 
+    def isTurn(self, square: Square):
+        """ Checks if it is a players turn when they select a piece.
+
+        Args:
+            square (Square): the square the player has clicked on.
+
+        Returns:
+            Boolean: True if it is that player's turn.
+        """
+        if self.clickCount % 4 == 0: #White's turn
+            if square.getCurrentPiece().pieceColour == "black":
+                return False
+        elif square.getCurrentPiece().pieceColour == "white":
+            return False
+        return True    
+
     def handleMove(self, square: Square):
         """Handles moving a piece
 
@@ -158,6 +174,8 @@ class Board:
             square (Square): the currently selected square.
         """
         if self.clickCount % 2 == 0:
+            if self.isTurn(square) == False:
+                return
             self.selectedSquare = square
             square.update(disabled=True)
         else:
