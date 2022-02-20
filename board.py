@@ -18,6 +18,7 @@ class Board:
     clickCount = 0
     selectedSquare = Square
     layout = [[], [], [], [], [], [], [], []]
+    pGN = []
 
     def setInitialLayout(self):
         """Sets the initial (blank) layout of the board.
@@ -188,7 +189,7 @@ class Board:
             self.selectedSquare = square
             square.update(disabled=True)
         else:  # Place to move the piece to.
-            if self.isMoveLegal(self.selectedSquare, square) == False:
+            if self.isMoveLegal(self.selectedSquare, square) is False:
                 self.clickCount -= 1
                 self.selectedSquare.update(disabled=False)
                 psg.Print(self.clickCount)
@@ -197,7 +198,77 @@ class Board:
             square.setCurrentPiece(self.selectedSquare.getCurrentPiece())
             self.selectedSquare.setCurrentPiece(Piece("", "", ""))
             self.selectedSquare.update(disabled=False)
+            psg.Print(self.pGN[len(self.pGN) - 1])
         self.clickCount += 1
+
+    def isPawnMoveLegal(self, currentPosition: Square, targetPosition: Square):
+        """Checks if a pawn move is legal.
+
+        Args:
+            currentPosition (Square): The current piece position.
+            targetPosition (Square): The target piece position.
+
+        Returns:
+            Boolean: True if the move is legal.
+        """
+        colour = currentPosition.getCurrentPiece().pieceColour
+        currentKey = currentPosition.Key
+        targetKey = targetPosition.Key
+        if colour == "white":
+            if (int(targetKey[1]) - int(currentKey[1]) == 1 and
+               targetKey[0] == currentKey[0] and
+               targetPosition.getCurrentPiece().pieceType == ""):
+                self.pGN.append(targetKey)
+                return True  # Standard white move.
+            elif (int(targetKey[1]) - int(currentKey[1]) == 1 and
+                  (ord(targetKey[0]) - ord(currentKey[0]) == 1 or
+                   ord(targetKey[0]) - ord(currentKey[0]) == -1) and
+                  targetPosition.getCurrentPiece().pieceColour == "black"):
+                self.pGN.append(currentKey[0] + "x" + targetKey)
+                return True  # White takes.
+            elif (int(targetKey[1]) - int(currentKey[1]) == 1 and
+                  (ord(targetKey[0]) - ord(currentKey[0]) == 1 or
+                   ord(targetKey[0]) - ord(currentKey[0]) == -1) and
+                  self.window[targetKey[0]+currentKey[1]].getCurrentPiece()
+                      .pieceColour == "black" and
+                  self.pGN[len(self.pGN) - 1] == targetKey[0]+currentKey[1]):
+                self.window[targetKey[0]+currentKey[1]].setCurrentPiece(Piece("", "", ""))
+                self.pGN.append(currentKey[0] + "x" + targetKey)
+                return True  # White takes en passant.
+            elif (int(currentKey[1]) == 2 and
+                  int(targetKey[1]) - int(currentKey[1]) == 2 and
+                  targetKey[0] == currentKey[0] and
+                  targetPosition.getCurrentPiece().pieceType == ""):
+                self.pGN.append(targetKey)
+                return True   # Initial white move.
+        else:
+            if (int(currentKey[1]) - int(targetKey[1]) == 1 and
+               targetKey[0] == currentKey[0] and
+               targetPosition.getCurrentPiece().pieceType == ""):
+                self.pGN.append(targetKey)
+                return True  # Standard black move.
+            elif (int(currentKey[1]) - int(targetKey[1]) == 1 and
+                  (ord(targetKey[0]) - ord(currentKey[0]) == 1 or
+                   ord(targetKey[0]) - ord(currentKey[0]) == -1) and
+                  targetPosition.getCurrentPiece().pieceColour == "white"):
+                self.pGN.append(currentKey[0] + "x" + targetKey)
+                return True  # Black takes.
+            elif (int(currentKey[1]) - int(targetKey[1]) == 1 and
+                  (ord(targetKey[0]) - ord(currentKey[0]) == 1 or
+                   ord(targetKey[0]) - ord(currentKey[0]) == -1) and
+                  self.window[targetKey[0]+currentKey[1]].getCurrentPiece()
+                      .pieceColour == "white" and
+                  self.pGN[len(self.pGN) - 1] == targetKey[0]+currentKey[1]):
+                self.window[targetKey[0]+currentKey[1]].setCurrentPiece(Piece("", "", ""))
+                self.pGN.append(currentKey[0] + "x" + targetKey)
+                return True  # Black takes en passant.
+            elif (int(currentKey[1]) == 7 and
+                  int(currentKey[1]) - int(targetKey[1]) == 2 and
+                  targetKey[0] == currentKey[0] and
+                  targetPosition.getCurrentPiece().pieceType == ""):
+                self.pGN.append(targetKey)
+                return True  # Initial black move.
+        return False
 
     def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
         """Checks if a move is legal.
@@ -209,6 +280,9 @@ class Board:
         Returns:
             Boolean: True if the move is legal.
         """
+        if currentPosition.getCurrentPiece().pieceType == "pawn":
+            if self.isPawnMoveLegal(currentPosition, targetPosition):
+                return True
         return False
 
     def launchGameLoop(self):
