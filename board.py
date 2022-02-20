@@ -188,11 +188,28 @@ class Board:
             self.selectedSquare = square
             square.update(disabled=True)
         else:  # Place to move the piece to.
+            if self.isMoveLegal(self.selectedSquare, square) == False:
+                self.clickCount -= 1
+                self.selectedSquare.update(disabled=False)
+                psg.Print(self.clickCount)
+                return
             self.selectedSquare.getCurrentPiece().moveTo(square.Key)
             square.setCurrentPiece(self.selectedSquare.getCurrentPiece())
             self.selectedSquare.setCurrentPiece(Piece("", "", ""))
             self.selectedSquare.update(disabled=False)
         self.clickCount += 1
+
+    def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
+        """Checks if a move is legal.
+
+        Args:
+            currentPosition (Square): The current piece position.
+            targetPosition (Square): The target piece position.
+
+        Returns:
+            Boolean: True if the move is legal.
+        """
+        return False
 
     def launchGameLoop(self):
         """Launches and runs the game loop.
@@ -206,7 +223,6 @@ class Board:
                 isInitialising = False
             if event != psg.WIN_CLOSED:
                 if event != psg.TIMEOUT_EVENT:
-                    psg.Print(self.window[event].getCurrentImage())
                     self.handleMove(self.window[event])
                 self.updateBoardView()
             if event == psg.WIN_CLOSED:
