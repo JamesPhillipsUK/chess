@@ -22,12 +22,13 @@ class Board:
     def setInitialLayout(self):
         """Sets the initial (blank) layout of the board.
         """
+        # Build an 8x8 grid of Squares a1 - h8, with chequered square pattern.
         for cnt in range(8, 0, -1):
             for col in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']:
                 self.layout[cnt-1] += [Square(key=col + str(cnt),
                                               image_data=self.getSquareColour(
                                                   col + str(cnt)))]
-        self.layout.reverse()
+        self.layout.reverse()  # Flip it - a1 goes at the bottom-left.
 
     def getLayout(self):
         """ Gets the current board layout
@@ -98,6 +99,7 @@ class Board:
     def setUpPieces(self):
         """ Sets up the pieces on the board.
         """
+        # White back rank:
         self.window["a1"].setCurrentPiece(Piece("rook", "white", "a1"))
         self.window["b1"].setCurrentPiece(Piece("knight", "white", "b1"))
         self.window["c1"].setCurrentPiece(Piece("bishop", "white", "c1"))
@@ -106,12 +108,15 @@ class Board:
         self.window["f1"].setCurrentPiece(Piece("bishop", "white", "f1"))
         self.window["g1"].setCurrentPiece(Piece("knight", "white", "g1"))
         self.window["h1"].setCurrentPiece(Piece("rook", "white", "h1"))
+
+        # 2nd and 7th rank pawns:
         for col in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']:
             self.window[col+"2"].setCurrentPiece(Piece(
                                                  "pawn", "white", col+"2"))
             self.window[col+"7"].setCurrentPiece(Piece(
                                                  "pawn", "black", col+"7"))
 
+        # Black back rank:
         self.window["a8"].setCurrentPiece(Piece("rook", "black", "a8"))
         self.window["b8"].setCurrentPiece(Piece("knight", "black", "b8"))
         self.window["c8"].setCurrentPiece(Piece("bishop", "black", "c8"))
@@ -124,11 +129,13 @@ class Board:
     def updateBoardView(self):
         """Updates the view of the board.
         """
+        # Generate a list of all squares on the board.
         squares = []
         for file in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']:
             for rank in range(8, 0, -1):
                 squares.append(self.window[file+str(rank)])
 
+        # Find the right image asset for each square.
         for item in squares:
             imageLocation = "img/"
             image = item.getCurrentImage()
@@ -160,12 +167,12 @@ class Board:
         Returns:
             Boolean: True if it is that player's turn.
         """
-        if self.clickCount % 4 == 0: #White's turn
+        if self.clickCount % 4 == 0:  # White's turn
             if square.getCurrentPiece().pieceColour == "black":
-                return False
+                return False  # White selected a black piece.
         elif square.getCurrentPiece().pieceColour == "white":
-            return False
-        return True    
+            return False  # Black selected a white piece.
+        return True
 
     def handleMove(self, square: Square):
         """Handles moving a piece
@@ -173,12 +180,14 @@ class Board:
         Args:
             square (Square): the currently selected square.
         """
-        if self.clickCount % 2 == 0:
-            if self.isTurn(square) == False:
+        if self.clickCount % 2 == 0:  # Piece selected to be moved.
+            if square.getCurrentPiece().pieceType == "":  # Piece must exist.
+                return
+            if self.isTurn(square) is False:
                 return
             self.selectedSquare = square
             square.update(disabled=True)
-        else:
+        else:  # Place to move the piece to.
             self.selectedSquare.getCurrentPiece().moveTo(square.Key)
             square.setCurrentPiece(self.selectedSquare.getCurrentPiece())
             self.selectedSquare.setCurrentPiece(Piece("", "", ""))
