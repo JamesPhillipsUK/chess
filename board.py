@@ -329,10 +329,10 @@ class Board:
         """
         targetKey = targetPosition.Key
         currentKey = currentPosition.Key
-        if ((ord(targetKey[0]) - ord(currentKey[0]) == 
-             int(currentKey[1]) - int(targetKey[1])) or  # Bottom-righttop-left
-            ((ord(targetKey[0]) - 101) + (ord(currentKey[0]) - 101) == 
-             int(currentKey[1]) + int(targetKey[1]))):  # Bottom-lefttop-right
+        if ((ord(targetKey[0]) - ord(currentKey[0]) ==
+                int(currentKey[1]) - int(targetKey[1])) or
+           ((ord(targetKey[0]) - 96) - (int(targetKey[1])) ==
+                (ord(currentKey[0]) - 96) - (int(currentKey[1])))):
             self.pGN.append("B"+targetKey)
             return True
         return False
