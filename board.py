@@ -296,11 +296,11 @@ class Board:
             (int(targetKey[1]) - int(currentKey[1]) == 2 or
              int(currentKey[1]) - int(targetKey[1]) == 2)):
             if targetPosition.getCurrentPiece().pieceType == "":
-                self.pGN.append("N"+targetKey)
+                self.pGN.append("N" + targetKey)
                 return True  # Move to empty square.
             elif (targetPosition.getCurrentPiece().pieceColour !=
                   currentPosition.getCurrentPiece().pieceColour):
-                self.pGN.append("Nx"+targetKey)
+                self.pGN.append("Nx" + targetKey)
                 return True  # Knight takes.
 
         elif ((ord(targetKey[0]) - ord(currentKey[0]) == 2 or
@@ -308,11 +308,11 @@ class Board:
               (int(targetKey[1]) - int(currentKey[1]) == 1 or
                int(currentKey[1]) - int(targetKey[1]) == 1)):
             if targetPosition.getCurrentPiece().pieceType == "":
-                self.pGN.append("N"+targetKey)
+                self.pGN.append("N" + targetKey)
                 return True  # Move to empty square.
             elif (targetPosition.getCurrentPiece().pieceColour !=
                   currentPosition.getCurrentPiece().pieceColour):
-                self.pGN.append("Nx"+targetKey)
+                self.pGN.append("Nx" + targetKey)
                 return True  # Knight takes.
         return False
 
@@ -373,16 +373,38 @@ class Board:
         """
         targetKey = targetPosition.Key
         currentKey = currentPosition.Key
+        # Check we're not jumping any pieces between here and our target.
+        step = 1
+        skipSelf = True  # When moved, don't check if it's jumping over itself.
+        if int(currentKey[1]) == int(targetKey[1]):
+            if ord(currentKey[0]) > ord(targetKey[0]):
+                step = -1
+            for rank in range(ord(currentKey[0]), ord(targetKey[0]), step):
+                if skipSelf:
+                    skipSelf = False
+                elif (self.window[chr(rank) + currentKey[1]].getCurrentPiece()
+                      .pieceColour != ""):
+                    return False
+        else:
+            if int(currentKey[1]) > int(targetKey[1]):
+                step = -1
+            for file in range(int(currentKey[1]), int(targetKey[1]), step):
+                if skipSelf:
+                    skipSelf = False
+                elif (self.window[currentKey[0] + str(file)].getCurrentPiece()
+                      .pieceColour != ""):
+                    return False
+        # If the attempted move is legal, make it.
         if ((ord(targetKey[0]) != ord(currentKey[0]) and
              int(currentKey[1]) == int(targetKey[1])) or
             (int(targetKey[1]) != int(currentKey[1]) and
              ord(currentKey[0]) == ord(targetKey[0]))):
             if targetPosition.getCurrentPiece().pieceType == "":
-                self.pGN.append("R"+targetKey)
+                self.pGN.append("R" + targetKey)
                 return True  # Move to empty square.
             elif (targetPosition.getCurrentPiece().pieceColour !=
                   currentPosition.getCurrentPiece().pieceColour):
-                self.pGN.append("Rx"+targetKey)
+                self.pGN.append("Rx" + targetKey)
                 return True  # Rook takes.
         return False
 
