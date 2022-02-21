@@ -329,16 +329,35 @@ class Board:
         """
         targetKey = targetPosition.Key
         currentKey = currentPosition.Key
+        # Check we're not jumping any pieces between here and our target.
+        skipSelf = True  # When moved, don't check if it's jumping over itself.
+        rankStep = 1
+        fileStep = 1
+        if int(currentKey[1]) > int(targetKey[1]):
+            fileStep = -1
+        if ord(currentKey[0]) > ord(targetKey[0]):
+            rankStep = -1
+        for file in range(int(currentKey[1]), int(targetKey[1]), fileStep):
+            for rank in range(ord(currentKey[0]), ord(targetKey[0]), rankStep):
+                if ((rank - ord(currentKey[0]) == int(currentKey[1]) - file) or
+                    ((rank - 96) - file ==
+                     (ord(currentKey[0]) - 96) - int(currentKey[1]))):
+                    if skipSelf:
+                        skipSelf = False
+                    elif (self.window[chr(rank) + str(file)].getCurrentPiece()
+                          .pieceColour != ""):
+                        return False
+        # If the attempted move is legal, make it.
         if ((ord(targetKey[0]) - ord(currentKey[0]) ==
                 int(currentKey[1]) - int(targetKey[1])) or
            ((ord(targetKey[0]) - 96) - (int(targetKey[1])) ==
                 (ord(currentKey[0]) - 96) - (int(currentKey[1])))):
             if (targetPosition.getCurrentPiece().pieceColour == ""):
-                self.pGN.append("B"+targetKey)
+                self.pGN.append("B" + targetKey)
                 return True  # standard move
             elif (targetPosition.getCurrentPiece().pieceColour !=
                   currentPosition.getCurrentPiece().pieceColour):
-                self.pGN.append("Bx"+targetKey)
+                self.pGN.append("Bx" + targetKey)
                 return True  # Bishop takes
         return False
 
