@@ -316,6 +316,27 @@ class Board:
                 return True  # Knight takes.
         return False
 
+    def isBishopMoveLegal(self, currentPosition: Square,
+                          targetPosition: Square):
+        """Checks if a Bishop move is legal.
+
+        Args:
+            currentPosition (Square): The current piece position.
+            targetPosition (Square): The target piece position.
+
+        Returns:
+            Boolean: True if the move is legal.
+        """
+        targetKey = targetPosition.Key
+        currentKey = currentPosition.Key
+        if ((ord(targetKey[0]) - ord(currentKey[0]) == 
+             int(currentKey[1]) - int(targetKey[1])) or  # Bottom-righttop-left
+            ((ord(targetKey[0]) - 101) + (ord(currentKey[0]) - 101) == 
+             int(currentKey[1]) + int(targetKey[1]))):  # Bottom-lefttop-right
+            self.pGN.append("B"+targetKey)
+            return True
+        return False
+
     def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
         """Checks if a move is legal.
 
@@ -331,6 +352,9 @@ class Board:
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "knight":
             if self.isKnightMoveLegal(currentPosition, targetPosition):
+                return True
+        elif currentPosition.getCurrentPiece().pieceType == "bishop":
+            if self.isBishopMoveLegal(currentPosition, targetPosition):
                 return True
         return False
 
