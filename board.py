@@ -317,7 +317,7 @@ class Board:
         return False
 
     def isBishopMoveLegal(self, currentPosition: Square,
-                          targetPosition: Square):
+                          targetPosition: Square, piece: str = "B"):
         """Checks if a Bishop move is legal.
 
         Args:
@@ -353,15 +353,16 @@ class Board:
            ((ord(targetKey[0]) - 96) - (int(targetKey[1])) ==
                 (ord(currentKey[0]) - 96) - (int(currentKey[1])))):
             if (targetPosition.getCurrentPiece().pieceColour == ""):
-                self.pGN.append("B" + targetKey)
+                self.pGN.append(piece + targetKey)
                 return True  # standard move
             elif (targetPosition.getCurrentPiece().pieceColour !=
                   currentPosition.getCurrentPiece().pieceColour):
-                self.pGN.append("Bx" + targetKey)
+                self.pGN.append(piece + "x" + targetKey)
                 return True  # Bishop takes
         return False
 
-    def isRookMoveLegal(self, currentPosition: Square, targetPosition: Square):
+    def isRookMoveLegal(self, currentPosition: Square, targetPosition: Square,
+                        piece: str = "R"):
         """Checks if a Rook move is legal.
 
         Args:
@@ -400,12 +401,29 @@ class Board:
             (int(targetKey[1]) != int(currentKey[1]) and
              ord(currentKey[0]) == ord(targetKey[0]))):
             if targetPosition.getCurrentPiece().pieceType == "":
-                self.pGN.append("R" + targetKey)
+                self.pGN.append(piece + targetKey)
                 return True  # Move to empty square.
             elif (targetPosition.getCurrentPiece().pieceColour !=
                   currentPosition.getCurrentPiece().pieceColour):
-                self.pGN.append("Rx" + targetKey)
+                self.pGN.append(piece + "x" + targetKey)
                 return True  # Rook takes.
+        return False
+
+    def isQueenMoveLegal(self, currentPosition: Square,
+                         targetPosition: Square):
+        """Checks if a Queen move is legal.
+
+        Args:
+            currentPosition (Square): The current piece position.
+            targetPosition (Square): The target piece position.
+
+        Returns:
+            Boolean: True if the move is legal.
+        """
+        if self.isBishopMoveLegal(currentPosition, targetPosition, "Q"):
+            return True
+        elif self.isRookMoveLegal(currentPosition, targetPosition, "Q"):
+            return True
         return False
 
     def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
@@ -429,6 +447,9 @@ class Board:
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "rook":
             if self.isRookMoveLegal(currentPosition, targetPosition):
+                return True
+        elif currentPosition.getCurrentPiece().pieceType == "queen":
+            if self.isQueenMoveLegal(currentPosition, targetPosition):
                 return True
         return False
 
