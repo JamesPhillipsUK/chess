@@ -333,8 +333,13 @@ class Board:
                 int(currentKey[1]) - int(targetKey[1])) or
            ((ord(targetKey[0]) - 96) - (int(targetKey[1])) ==
                 (ord(currentKey[0]) - 96) - (int(currentKey[1])))):
-            self.pGN.append("B"+targetKey)
-            return True
+            if (targetPosition.getCurrentPiece().pieceColour == ""):
+                self.pGN.append("B"+targetKey)
+                return True  # standard move
+            elif (targetPosition.getCurrentPiece().pieceColour !=
+                  currentPosition.getCurrentPiece().pieceColour):
+                self.pGN.append("Bx"+targetKey)
+                return True  # Bishop takes
         return False
 
     def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
