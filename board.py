@@ -438,13 +438,14 @@ class Board:
         """
         targetKey = targetPosition.Key
         currentKey = currentPosition.Key
+        # Moves
         if ((ord(targetKey[0]) - ord(currentKey[0]) == 1 or
              ord(currentKey[0]) - ord(targetKey[0]) == 1 or
              ord(currentKey[0]) - ord(targetKey[0]) == 0) and
             (int(targetKey[1]) - int(currentKey[1]) == 1 or
              int(currentKey[1]) - int(targetKey[1]) == 1 or
              int(currentKey[1]) - int(targetKey[1]) == 0) and
-            targetKey != currentKey):
+                targetKey != currentKey):
             if targetPosition.getCurrentPiece().pieceType == "":
                 self.pGN.append("K" + targetKey)
                 return True  # Move to empty square.
@@ -452,6 +453,54 @@ class Board:
                   currentPosition.getCurrentPiece().pieceColour):
                 self.pGN.append("Kx" + targetKey)
                 return True  # King takes.
+        # Castles
+        elif (currentPosition.getCurrentPiece().pieceHasMoved is False and
+              int(targetKey[1]) == int(currentKey[1]) and
+              (ord(targetKey[0]) - ord(currentKey[0]) == 2 or
+               ord(currentKey[0]) - ord(targetKey[0]) == 2)):
+            if (ord(targetKey[0]) > ord(currentKey[0])):
+                if(self.window["h" + currentKey[1]].getCurrentPiece()
+                       .pieceType == "rook" and
+                   self.window["h" + currentKey[1]].getCurrentPiece()
+                       .pieceColour == currentPosition.getCurrentPiece()
+                       .pieceColour and
+                   self.window["h" + currentKey[1]].getCurrentPiece()
+                       .pieceHasMoved is False):
+                    if (self.window["f" + currentKey[1]].getCurrentPiece()
+                            .pieceType == "" and
+                        self.window["g" + currentKey[1]].getCurrentPiece()
+                            .pieceType == ""):
+                        self.window["f" + currentKey[1]].setCurrentPiece(
+                            Piece("rook",
+                                  currentPosition.getCurrentPiece()
+                                                 .pieceColour,
+                                  "f" + currentKey[1], True))
+                        self.window["h" + currentKey[1]].setCurrentPiece(
+                            Piece("", "", ""))
+                        self.pGN.append("O-O")
+                        return True
+            else:
+                if(self.window["a" + currentKey[1]].getCurrentPiece()
+                       .pieceType == "rook" and
+                   self.window["a" + currentKey[1]].getCurrentPiece()
+                       .pieceColour == currentPosition.getCurrentPiece()
+                       .pieceColour and
+                   self.window["a" + currentKey[1]].getCurrentPiece()
+                       .pieceHasMoved is False):
+                    if (self.window["d" + currentKey[1]].getCurrentPiece()
+                            .pieceType == "" and
+                        self.window["c" + currentKey[1]].getCurrentPiece()
+                            .pieceType == "" and
+                        self.window["b" + currentKey[1]].getCurrentPiece()
+                            .pieceType == ""):
+                        self.window["d" + currentKey[1]].setCurrentPiece(
+                            Piece("rook", currentPosition.getCurrentPiece()
+                                                         .pieceColour,
+                                  "d" + currentKey[1], True))
+                        self.window["a" + currentKey[1]].setCurrentPiece(
+                            Piece("", "", ""))
+                        self.pGN.append("O-O-O")
+                        return True
         return False
 
     def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
@@ -466,21 +515,27 @@ class Board:
         """
         if currentPosition.getCurrentPiece().pieceType == "pawn":
             if self.isPawnMoveLegal(currentPosition, targetPosition):
+                currentPosition.getCurrentPiece().pieceHasMoved = True
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "knight":
             if self.isKnightMoveLegal(currentPosition, targetPosition):
+                currentPosition.getCurrentPiece().pieceHasMoved = True
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "bishop":
             if self.isBishopMoveLegal(currentPosition, targetPosition):
+                currentPosition.getCurrentPiece().pieceHasMoved = True
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "rook":
             if self.isRookMoveLegal(currentPosition, targetPosition):
+                currentPosition.getCurrentPiece().pieceHasMoved = True
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "queen":
             if self.isQueenMoveLegal(currentPosition, targetPosition):
+                currentPosition.getCurrentPiece().pieceHasMoved = True
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "king":
             if self.isKingMoveLegal(currentPosition, targetPosition):
+                currentPosition.getCurrentPiece().pieceHasMoved = True
                 return True
         return False
 
