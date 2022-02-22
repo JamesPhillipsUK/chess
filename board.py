@@ -426,6 +426,34 @@ class Board:
             return True
         return False
 
+    def isKingMoveLegal(self, currentPosition: Square, targetPosition: Square):
+        """Checks if a King move is legal.
+
+        Args:
+            currentPosition (Square): The current piece position.
+            targetPosition (Square): The target piece position.
+
+        Returns:
+            Boolean: True if the move is legal.
+        """
+        targetKey = targetPosition.Key
+        currentKey = currentPosition.Key
+        if ((ord(targetKey[0]) - ord(currentKey[0]) == 1 or
+             ord(currentKey[0]) - ord(targetKey[0]) == 1 or
+             ord(currentKey[0]) - ord(targetKey[0]) == 0) and
+            (int(targetKey[1]) - int(currentKey[1]) == 1 or
+             int(currentKey[1]) - int(targetKey[1]) == 1 or
+             int(currentKey[1]) - int(targetKey[1]) == 0) and
+            targetKey != currentKey):
+            if targetPosition.getCurrentPiece().pieceType == "":
+                self.pGN.append("K" + targetKey)
+                return True  # Move to empty square.
+            elif (targetPosition.getCurrentPiece().pieceColour !=
+                  currentPosition.getCurrentPiece().pieceColour):
+                self.pGN.append("Kx" + targetKey)
+                return True  # King takes.
+        return False
+
     def isMoveLegal(self, currentPosition: Square, targetPosition: Square):
         """Checks if a move is legal.
 
@@ -450,6 +478,9 @@ class Board:
                 return True
         elif currentPosition.getCurrentPiece().pieceType == "queen":
             if self.isQueenMoveLegal(currentPosition, targetPosition):
+                return True
+        elif currentPosition.getCurrentPiece().pieceType == "king":
+            if self.isKingMoveLegal(currentPosition, targetPosition):
                 return True
         return False
 
