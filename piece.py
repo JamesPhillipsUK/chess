@@ -12,8 +12,9 @@ class Piece:
     pieceType = ""
     pieceColour = ""
     pieceSquare = ""
+    pieceHasMoved = False
 
-    def __init__(self, pType: str, colour: str, square: str):
+    def __init__(self, pType: str, colour: str, square: str, hasMoved: bool = False):
         """Create an instance of a chess piece.
 
         Args:
@@ -24,6 +25,7 @@ class Piece:
         self.pieceType = pType
         self.pieceColour = colour
         self.pieceSquare = square
+        self.pieceHasMoved = hasMoved
 
     def moveTo(self, square: str):
         """ Move the piece
