@@ -14,7 +14,10 @@ class Piece:
     pieceSquare = ""
     pieceHasMoved = False
 
-    def __init__(self, pType: str, colour: str, square: str, hasMoved: bool = False):
+    def __init__(self, pType: str,
+                 colour: str,
+                 square: str,
+                 hasMoved: bool = False):
         """Create an instance of a chess piece.
 
         Args:
@@ -34,3 +37,25 @@ class Piece:
             square (string): the square to move the piece to.
         """
         self.pieceSquare = square
+
+    def pieceCanPromote(self):
+        """ Checks if the piece can promote.
+
+        Returns:
+            bool: True if the piece can promote.
+        """
+        if self.pieceType == "pawn":
+            squareNameSpec = [char for char in self.pieceSquare]
+            if squareNameSpec[1] == '8' and self.pieceColour == "white":
+                return True
+            elif squareNameSpec[1] == '1' and self.pieceColour == "black":
+                return True
+        return False
+
+    def promote(self, newPiece: str):
+        """ Promotes the piece to a new piece.
+
+        Args:
+            newPiece (string): the type of piece to promote to.
+        """
+        self.pieceType = newPiece

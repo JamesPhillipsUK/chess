@@ -175,6 +175,28 @@ class Board:
             return False  # Black selected a white piece.
         return True
 
+    def promotePiece(self, piece: Piece):
+        """ Promotes a pawn to a piece.
+        
+        Args:
+            piece (Piece): the piece to promote.
+
+        Returns:
+            Piece: the promoted piece.
+        """
+        piecePromotion = psg.popup_get_text(
+                            modal=True,
+                            no_titlebar=True,
+                            message="What would you like to promote to?")
+        if (piecePromotion.lower() == "rook" or
+           piecePromotion.lower() == "queen" or
+           piecePromotion.lower() == "bishop" or
+           piecePromotion.lower() == "knight"):
+            piece.promote(piecePromotion.lower())
+        else:
+            piece = self.promotePiece(piece)
+        return piece
+
     def handleMove(self, square: Square):
         """Handles moving a piece
 
@@ -197,6 +219,11 @@ class Board:
             self.selectedSquare.getCurrentPiece().moveTo(square.Key)
             square.setCurrentPiece(self.selectedSquare.getCurrentPiece())
             self.selectedSquare.setCurrentPiece(Piece("", "", ""))
+
+            if square.getCurrentPiece().pieceCanPromote():
+                square.setCurrentPiece(self.promotePiece(
+                    square.getCurrentPiece()))
+
             self.selectedSquare.update(disabled=False)
             psg.Print(self.pGN[len(self.pGN) - 1])
         self.clickCount += 1
